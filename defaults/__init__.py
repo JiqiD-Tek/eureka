@@ -3,12 +3,17 @@
 # Create @ 2017/8/10 14:21
 # Author @ 819070918@qq.com
 
-APP = 'eureka-test'
-EUREKA_URLS = ['http://localhost:8761', ]
-HEARTBEAT = 5.0
-INSTANCE = {
+app = 'eureka-test'
+
+eureka_urls = ['http://localhost:8761', ]
+
+instance = {
      'ipAddr': 'localhost',
      'port': 7777,
-     'app': APP,
-     'instanceId': 'instanceId'
+     'app': app,
+     'instanceId': 'instanceId',
+     'leaseInfo': {
+          'durationInSecs': 10,
+          'evictionDurationInSecs': 20,
+     }
 }
