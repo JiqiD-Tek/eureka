@@ -5,10 +5,9 @@
 
 from __future__ import absolute_import
 
-from .wrappers import SimpleEurekaClientWrapper
-from .wrappers import SimpleEurekaServiceWrapper
+from .discovery_client import DiscoveryClient
 
 
 VERSION = (1, 0, 1)
 __version__ = '.'.join(map(str, VERSION))
-__all__ = ['SimpleEurekaClientWrapper', 'SimpleEurekaServiceWrapper']
+__all__ = ['DiscoveryClient']

@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-# File   @ client.py
+# File   @ eureka_client.py
 # Create @ 2017/8/10 14:23
 # Author @ 819070918@qq.com
 
 import time
-
-import validator
-import const
+import configure
 
 
 def get_timestamp():
@@ -42,15 +40,10 @@ class EurekaClient:
                 print('operation failed')
         """
         self.eureka_urls = eureka_urls
-        if instance_definition is not None:
-            if 'instanceId' not in instance_definition:
-                instance_definition['instanceId'] = "{}:{}:{}".format(
-                    instance_definition['ipAddr'],
-                    instance_definition['app'],
-                    instance_definition['port'])
-            self.instance_definition = validator.validate_instance_definition(instance_definition)
-            self.app_id = self.instance_definition['instance']['app']
-            self.instance_id = self.instance_definition['instance']['instanceId']
+
+        self.instance_definition = instance_definition
+        self.app_id = self.instance_definition['instance']['app']
+        self.instance_id = self.instance_definition['instance']['instanceId']
 
         self.verbose = verbose
         if verbose:
@@ -131,8 +124,8 @@ class EurekaClient:
         last_e = None
         for eureka_url in self.eureka_urls:
             try:
-                request = const.EUREKA_REQUESTS[method](
-                    "{}{}".format(eureka_url, api), headers=const.EUREKA_HEADERS[method], json=payload)
+                request = configure.EUREKA_REQUESTS[method](
+                    "{}{}".format(eureka_url, api), headers=configure.EUREKA_HEADERS[method], json=payload)
                 self._fail_code(accepted_code, request, comment, errors=errors)
                 success = True
                 return request

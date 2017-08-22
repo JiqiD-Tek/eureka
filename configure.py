@@ -1,35 +1,33 @@
 # -*- coding: utf-8 -*-
-# File   @ const.py
+# File   @ configure.py
 # Create @ 2017/8/10 14:23
 # Author @ 819070918@qq.com
 
 import requests
 
-EUREKA_DEFAULT_SAME_AS = 1
-EUREKA_DEFAULT_VALUE = 2
 
 EUREKA_INSTANCE_DEFINITION = {
     'needed': [
         'ipAddr', 'port', 'app'
     ],
-    'needed-with-default': [
-        ('hostName', EUREKA_DEFAULT_SAME_AS, 'ipAddr'),
-        ('port', EUREKA_DEFAULT_SAME_AS, 'port'),
-        ('securePort', EUREKA_DEFAULT_VALUE, {
+    'needed-with-default': {
+        'hostName': 'localhost',
+        'port': 8761,
+        'securePort': {
             '$': 443,
             '@enabled': 'false'
-        }),
-        ('dataCenterInfo', EUREKA_DEFAULT_VALUE, {
+        },
+        'dataCenterInfo': {
             'name': 'MyOwn',
             '@class': 'com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo'
-        }),
-        ('leaseInfo', EUREKA_DEFAULT_VALUE, {
-            'durationInSecs': 60,
-            'evictionDurationInSecs': 60,
-        }),
-        ('homePageUrl', EUREKA_DEFAULT_SAME_AS, 'ipAddr'),
-        ('healthCheckUrl', EUREKA_DEFAULT_SAME_AS, 'ipAddr')
-    ],
+        },
+        'leaseInfo': {
+            'durationInSecs': 30,
+            'evictionDurationInSecs': 90,
+        },
+        'homePageUrl': "localhost",
+        'healthCheckUrl': "localhost",
+    },
     'transformations': [
         ('port', lambda p: is_number(p), lambda p: {'$': int(p), '@enabled': 'true'}),
         ('securePort', lambda p: is_number(p), lambda p: {'$': int(p), '@enabled': 'true'}),

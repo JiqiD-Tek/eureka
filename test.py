@@ -5,29 +5,32 @@
 
 from __future__ import with_statement
 
-from eureka import SimpleEurekaServiceWrapper
-from eureka import SimpleEurekaClientWrapper
+
+from eureka import DiscoveryClient
 
 app = 'eureka-test'
+
 eureka_urls = ['http://localhost:8761', ]
-heartbeat = 5.0
+
 instance = {
      'ipAddr': 'localhost',
      'port': 7777,
      'app': app,
-     'instanceId': 'instanceId'
+     'instanceId': 'instanceId',
+     'leaseInfo': {
+          'durationInSecs': 10,
+          'evictionDurationInSecs': 20,
+     }
 }
 
 
-service_wrapper = SimpleEurekaServiceWrapper(eureka_urls, instance, heartbeat)
+client = DiscoveryClient(eureka_urls, instance)
 
 # Registering service
-service_wrapper.run()
+client.register()
 # Stopping service
-service_wrapper.stop()
-
-client_wrapper = SimpleEurekaClientWrapper(eureka_urls)
+client.deregister()
 
 # Fetching app data
-app_data = client_wrapper.app(app)
+app_data = client.app(app)
 

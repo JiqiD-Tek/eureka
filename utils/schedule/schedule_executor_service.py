@@ -50,16 +50,20 @@ class Link(object):
 
 class Task(threading.Thread):
 
-    def __init__(self, command, timestamp, period):
+    def __init__(self, task_id, handler, timestamp, period):
         threading.Thread.__init__(self)
-        self.command = command
+        self.task_id = task_id
+        self.handler = handler
         self.timestamp = timestamp
         self.period = period
 
     def run(self):
         """
         """
-        self.command()
+        self.handler.callable()
+
+
+execute_service_lock = threading.Lock()
 
 
 class ExecuteService(threading.Thread):
@@ -72,24 +76,47 @@ class ExecuteService(threading.Thread):
     def run(self):
         while True:
             p = self.link.head
-            while not p.next and p.next.data.timestamp < now():
+            while p.next and p.next.data.timestamp < now():
                 p.next.data.start()
                 if p.next.data.period > 0:
-                    self.add(Task(p.next.data.command, p.next.data.timestamp + p.next.data.period, p.next.data.period))
+                    self.add(Task(p.next.data.task_id,
+                                  p.next.data.handler,
+                                  p.next.data.timestamp + p.next.data.period,
+                                  p.next.data.period))
 
+                execute_service_lock.acquire()
                 p.next = p.next.next
+                execute_service_lock.release()
 
             time.sleep(1)
 
     def add(self, task):
         """
+          添加定时任务
         """
+        execute_service_lock.acquire()
         p = self.link.head
-        while not p.next and p.next.data.timestamp < task.timestamp:
+        while p.next and p.next.data.timestamp < task.timestamp:
             p = p.next
 
         new = Node(task, p.next)
         p.next = new
+
+        execute_service_lock.release()
+
+    def remove(self, task_id):
+        """
+          删除定时任务
+        """
+        execute_service_lock.acquire()
+        p = self.link.head
+
+        while p.next and p.next.data.task_id != task_id:
+            p = p.next
+
+        if p.next:
+            p.next = p.next.next
+        execute_service_lock.release()
 
 
 class ScheduleService(object):
@@ -99,17 +126,17 @@ class ScheduleService(object):
         self.execute.setDaemon(True)
         self.execute.start()
 
-    def schedule(self, command, delay):
+    def schedule(self, task_id, handler, delay):
         """
         """
-        self.execute.add(Task(command, now() + delay, 0))
+        self.execute.add(Task(task_id, handler, now() + delay, 0))
 
-    def schedule_at_fixed_rate(self, command, init_delay, period):
+    def schedule_at_fixed_rate(self, task_id, handler, init_delay, period):
         """
         """
-        self.execute.add(Task(command, now() + init_delay, period))
+        self.execute.add(Task(task_id, handler, now() + init_delay, period))
 
-    def schedule_with_fixed_rate(self, command, init_delay, period):
+    def drop_schedule(self, task_id):
         """
         """
-        self.execute.add(Task(command, now() + init_delay, period))
+        self.execute.remove(task_id)
