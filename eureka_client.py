@@ -21,7 +21,7 @@ class EurekaInstanceDoesNotExistException(Exception):
 
 class EurekaClient:
 
-    def __init__(self, eureka_urls, instance_definition=None, verbose=False):
+    def __init__(self, eureka_urls, instance_definition, verbose=False):
         """
         eureka_urls is the address to send requests to.
         instance_definition is description of service

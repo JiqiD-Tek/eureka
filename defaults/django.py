@@ -11,9 +11,9 @@ from eureka import defaults
 from eureka import DiscoveryClient
 
 
-service_wrapper = None
+client = None
 
-if service_wrapper is None:
+if client is None:
     eureka_urls = getattr(settings, 'EUREKA_URLS', defaults.EUREKA_URLS)
     instance = getattr(settings, 'INSTANCE', defaults.INSTANCE)
 
