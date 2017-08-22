@@ -3,7 +3,7 @@
 # Create @ 2017/8/10 14:22
 # Author @ 819070918@qq.com
 
-import eureka_client
+import eureka_http_client
 import validator
 
 from utils.schedule.handler import Handler
@@ -16,7 +16,7 @@ class HeartBeatHandler(Handler):
         self.client = client
 
     def callable(self):
-        self.client.heartbeat()
+        self.client.send_heart_beat()
 
 
 class RenewallHandler(Handler):
@@ -40,7 +40,7 @@ class DiscoveryClient(object):
                 instance_definition['port'])
         self.instance_definition = validator.validate_instance_definition(instance_definition)
 
-        self.client = eureka_client.EurekaClient(eureka_urls, self.instance_definition)
+        self.client = eureka_http_client.EurekaHttpClient(eureka_urls, self.instance_definition)
         self.app_info = {"eureka": {}}
 
         self.schedule_service = ScheduleService()
@@ -71,7 +71,7 @@ class DiscoveryClient(object):
         # 注销心跳
         self.schedule_service.drop_schedule("{}_HeartBeatHandler"
                                             .format(self.instance_definition["instance"]['instanceId']))
-        self.client.deregister()
+        self.client.cancel()
 
     def app(self, app_name):
         """

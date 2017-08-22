@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# File   @ eureka_client.py
+# File   @ eureka_http_client.py
 # Create @ 2017/8/10 14:23
 # Author @ 819070918@qq.com
 
@@ -11,7 +11,7 @@ def get_timestamp():
     return int(time.time())
 
 
-class EurekaClientError(Exception):
+class EurekaHttpClientError(Exception):
     pass
 
 
@@ -19,7 +19,7 @@ class EurekaInstanceDoesNotExistException(Exception):
     pass
 
 
-class EurekaClient:
+class EurekaHttpClient:
 
     def __init__(self, eureka_urls, instance_definition, verbose=False):
         """
@@ -54,10 +54,10 @@ class EurekaClient:
         request_api = '/eureka/apps/' + self.app_id
         self._request('POST', request_api, 'registration', 204, payload=self.instance_definition)
 
-    def deregister(self):
+    def cancel(self):
         self._request('DELETE', comment='deregistration')
 
-    def heartbeat(self):
+    def send_heart_beat(self):
         request_api = self._instance_api() + '?status=UP&lastDirtyTimestamp=' + \
             str(get_timestamp())
         self._request('PUT', api=request_api, comment='heartbeat',
@@ -105,7 +105,7 @@ class EurekaClient:
         if self.verbose:
             self._show_request(request, comment)
         if request.status_code != code:
-            error = EurekaClientError
+            error = EurekaHttpClientError
             if errors is not None and request.status_code in errors:
                 error = errors[request.status_code]
             raise error({'request': request, 'comment': comment, 'status_code': request.status_code})
