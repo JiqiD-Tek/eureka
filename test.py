@@ -5,10 +5,9 @@
 
 from __future__ import with_statement
 
-
 from eureka import DiscoveryClient
 
-app = 'eureka-test'
+app = 'EUREKA_TEST'
 
 eureka_urls = ['http://localhost:8761', ]
 
@@ -26,11 +25,17 @@ instance = {
 
 client = DiscoveryClient(eureka_urls, instance)
 
-# Registering service
+# registering service
 client.register()
-# Stopping service
-client.deregister()
+
+
+# Fetching all app data
+applications = client.get_applications()
+print applications
 
 # Fetching app data
-app_data = client.app(app)
+app_data = client.get_application(app)
+print app_data
 
+# unregister service
+client.unregister()

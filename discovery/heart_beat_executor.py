@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# File   @ handler.py
-# Create @ 2017/8/22 09:18
+# File   @ heart_beat_executor.py
+# Create @ 2017/8/23 10:10
 # Author @ 819070918@qq.com
 
 
@@ -27,7 +27,13 @@
 # ============ 佛祖保佑 == 永无BUG ============
 # ===========================================
 
-class Handler(object):
+from eureka.utils.schedule.executor import Executor
+
+
+class HeartBeatExecutor(Executor):
+
+    def __init__(self, client):
+        self.client = client
 
     def callable(self):
-        pass
+        self.client.send_heart_beat()

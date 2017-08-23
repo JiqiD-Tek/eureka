@@ -5,7 +5,8 @@
 
 from __future__ import absolute_import
 
-from .discovery_client import DiscoveryClient
+
+from eureka.discovery.discovery_client import DiscoveryClient
 
 
 VERSION = (1, 0, 1)

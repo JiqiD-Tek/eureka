@@ -28,7 +28,7 @@ Example:
     # Registering service
     client.register()
     # Stopping service
-    client.deregister()
+    client.unregister()
 
     # Fetching app data
     app_data = client.app(app)

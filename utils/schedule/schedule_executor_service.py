@@ -50,17 +50,17 @@ class Link(object):
 
 class Task(threading.Thread):
 
-    def __init__(self, task_id, handler, timestamp, period):
+    def __init__(self, task_id, executor, timestamp, period):
         threading.Thread.__init__(self)
         self.task_id = task_id
-        self.handler = handler
+        self.executor = executor
         self.timestamp = timestamp
         self.period = period
 
     def run(self):
         """
         """
-        self.handler.callable()
+        self.executor.callable()
 
 
 execute_service_lock = threading.Lock()
@@ -80,7 +80,7 @@ class ExecuteService(threading.Thread):
                 p.next.data.start()
                 if p.next.data.period > 0:
                     self.add(Task(p.next.data.task_id,
-                                  p.next.data.handler,
+                                  p.next.data.executor,
                                   p.next.data.timestamp + p.next.data.period,
                                   p.next.data.period))
 
@@ -96,11 +96,10 @@ class ExecuteService(threading.Thread):
         """
         execute_service_lock.acquire()
         p = self.link.head
+
         while p.next and p.next.data.timestamp < task.timestamp:
             p = p.next
-
-        new = Node(task, p.next)
-        p.next = new
+        p.next = Node(task, p.next)
 
         execute_service_lock.release()
 
@@ -111,11 +110,12 @@ class ExecuteService(threading.Thread):
         execute_service_lock.acquire()
         p = self.link.head
 
-        while p.next and p.next.data.task_id != task_id:
+        while p.next:
+            if p.next.data.task_id == task_id:
+                p.next = p.next.next
+                continue
             p = p.next
 
-        if p.next:
-            p.next = p.next.next
         execute_service_lock.release()
 
 
@@ -126,15 +126,15 @@ class ScheduleService(object):
         self.execute.setDaemon(True)
         self.execute.start()
 
-    def schedule(self, task_id, handler, delay):
+    def schedule(self, task_id, executor, delay):
         """
         """
-        self.execute.add(Task(task_id, handler, now() + delay, 0))
+        self.execute.add(Task(task_id, executor, now() + delay, 0))
 
-    def schedule_at_fixed_rate(self, task_id, handler, init_delay, period):
+    def schedule_at_fixed_rate(self, task_id, executor, init_delay, period):
         """
         """
-        self.execute.add(Task(task_id, handler, now() + init_delay, period))
+        self.execute.add(Task(task_id, executor, now() + init_delay, period))
 
     def drop_schedule(self, task_id):
         """
