@@ -2,36 +2,44 @@ eureka
 =====
 eureka is for python to connect to eureka, include heartbeat and get app info.
 
+
 Example:
 ----------
 
     from eureka import DiscoveryClient
 
-    app = 'eureka-test'
+    app = 'EUREKA_TEST'
 
     eureka_urls = ['http://localhost:8761', ]
 
     instance = {
-        'ipAddr': 'localhost',
-        'port': 7777,
-        'app': app,
-        'instanceId': 'instanceId',
-        'leaseInfo': {
-            'durationInSecs': 10,
-            'evictionDurationInSecs': 20,
-        }
+         'ipAddr': 'localhost',
+         'port': 7777,
+         'app': app,
+         'instanceId': 'instanceId',
+         'leaseInfo': {
+              'durationInSecs': 10,
+              'evictionDurationInSecs': 20,
+         }
     }
 
 
     client = DiscoveryClient(eureka_urls, instance)
 
-    # Registering service
+    # registering service
     client.register()
-    # Stopping service
-    client.unregister()
+
+
+    # Fetching all app data
+    applications = client.get_applications()
+    print applications
 
     # Fetching app data
-    app_data = client.app(app)
+    app_data = client.get_application(app)
+    print app_data
+
+    # unregister service
+    client.unregister()
 
 
 
