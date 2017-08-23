@@ -29,7 +29,6 @@ Example:
     # registering service
     client.register()
 
-
     # Fetching all app data
     applications = client.get_applications()
     print applications
