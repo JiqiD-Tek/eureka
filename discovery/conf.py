@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# File   @ configure.py
+# File   @ conf.py
 # Create @ 2017/8/10 14:23
 # Author @ 819070918@qq.com
 

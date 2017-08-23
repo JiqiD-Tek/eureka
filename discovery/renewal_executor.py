@@ -37,4 +37,4 @@ class RenewalExecutor(Executor):
         self.instance_info = instance_info
 
     def callable(self):
-        self.instance_info["eureka"] = self.client.query()
+        self.instance_info.instance = self.client.query()

@@ -5,7 +5,7 @@
 
 import time
 
-import configure
+from eureka.discovery.configure import EUREKA_HEADERS, EUREKA_REQUESTS
 
 
 def get_timestamp():
@@ -125,8 +125,8 @@ class EurekaHttpClient:
         last_e = None
         for eureka_url in self.eureka_urls:
             try:
-                request = configure.EUREKA_REQUESTS[method](
-                    "{}{}".format(eureka_url, api), headers=configure.EUREKA_HEADERS[method], json=payload)
+                request = EUREKA_REQUESTS[method](
+                    "{}{}".format(eureka_url, api), headers=EUREKA_HEADERS[method], json=payload)
                 self._fail_code(accepted_code, request, comment, errors=errors)
                 success = True
                 return request
