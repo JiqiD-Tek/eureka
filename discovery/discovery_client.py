@@ -25,10 +25,10 @@ class DiscoveryClient(object):
         self.heart_beat_executor = HeartBeatExecutor(self.query_client)
 
         # 更新本地app数据
-        self.schedule.schedule_at_fixed_rate("{}_RenewallHandler".
+        self.schedule.schedule_at_fixed_rate("{}_RenewalExecutor".
                                              format(self.instance_definition["instance"]['instanceId']),
                                              self.renewal_executor,
-                                             self.instance_definition["instance"]["leaseInfo"]["durationInSecs"],
+                                             0,
                                              self.instance_definition["instance"]["leaseInfo"]["durationInSecs"])
 
     def validator(self, instance_definition):
@@ -60,7 +60,7 @@ class DiscoveryClient(object):
         """
         self.query_client.register()
         # 添加心跳
-        self.schedule.schedule_at_fixed_rate("{}_HeartBeatHandler"
+        self.schedule.schedule_at_fixed_rate("{}_HeartBeatExecutor"
                                              .format(self.instance_definition["instance"]['instanceId']),
                                              self.heart_beat_executor,
                                              0,
@@ -76,7 +76,7 @@ class DiscoveryClient(object):
           注销服务
         """
         # 删除心跳
-        self.schedule.drop_schedule("{}_HeartBeatHandler".format(self.instance_definition["instance"]['instanceId']))
+        self.schedule.drop_schedule("{}_HeartBeatExecutor".format(self.instance_definition["instance"]['instanceId']))
         self.query_client.cancel()
 
     def get_applications(self):
