@@ -9,7 +9,7 @@ from eureka.discovery.eureka_http_client import EurekaHttpClient
 from eureka.discovery.heart_beat_executor import HeartBeatExecutor
 from eureka.discovery.renewal_executor import RenewalExecutor
 
-from eureka.discovery.configure import EUREKA_INSTANCE_DEFINITION
+from eureka.discovery.conf import EUREKA_INSTANCE_DEFINITION
 
 from eureka.utils.schedule.schedule_executor_service import ScheduleService
 

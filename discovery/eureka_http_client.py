@@ -5,7 +5,7 @@
 
 import time
 
-from eureka.discovery.configure import EUREKA_HEADERS, EUREKA_REQUESTS
+from eureka.discovery.conf import EUREKA_HEADERS, EUREKA_REQUESTS
 
 
 def get_timestamp():
